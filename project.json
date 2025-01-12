@@ -1,0 +1,135 @@
+{
+  "routes": {
+    "/posts": {
+      "description": "Shows a list of recent posts",
+      "links": [
+        {
+          "visibleText": "View Post",
+          "route": "/posts/:postSlug",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": []
+    },
+    "/posts/:postSlug": {
+      "description": "View a single post",
+      "links": [
+        {
+          "visibleText": "Back to Posts",
+          "route": "/posts",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": []
+    },
+    "/store": {
+      "description": "Homepage for the storefront, showing featured products and categories",
+      "links": [
+        {
+          "visibleText": "View Product",
+          "route": "/store/categories/:categorySlug/:productSlug",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "View Category",
+          "route": "/store/categories/:categorySlug",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "All Categories",
+          "route": "/store/categories",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": []
+    },
+    "/store/categories": {
+      "description": "Displays a list of categories",
+      "links": [
+        {
+          "visibleText": "Back to Store",
+          "route": "/store",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "View Category",
+          "route": "/store/categories/:categorySlug",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": []
+    },
+    "/store/categories/:categorySlug": {
+      "description": "Displays a category description and all its products",
+      "links": [
+        {
+          "visibleText": "Back to Store",
+          "route": "/store",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "Back to Categories",
+          "route": "/store/categories",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "View Product",
+          "route": "/store/categories/:categorySlug/:productSlug",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": []
+    },
+    "/store/categories/:categorySlug/:productSlug": {
+      "description": "Displays full product details",
+      "links": [
+        {
+          "visibleText": "Back to Store",
+          "route": "/store",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "Back to All Categories",
+          "route": "/store/categories",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "Back to Category",
+          "route": "/store/categories/:categorySlug",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": [
+        {
+          "handlerName": "addToCart",
+          "description": "Adds the current product to the user's cart via API",
+          "submitText": "Add to Cart",
+          "method": "POST",
+          "redirectRoute": "",
+          "apiRoute": "/api/cart/addProduct",
+          "templateLocation": "general",
+          "fields": [
+            {
+              "name": "productId",
+              "inputType": "hidden",
+              "labelText": "",
+              "options": [],
+              "additionalAttributes": ""
+            },
+            {
+              "name": "quantity",
+              "inputType": "number",
+              "labelText": "Quantity",
+              "options": [],
+              "additionalAttributes": "className=\"foo\" required"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "global": {
+    "links": [],
+    "forms": []
+  }
+}

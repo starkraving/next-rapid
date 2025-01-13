@@ -2,7 +2,7 @@ import { JSONFileSyncPreset } from "lowdb/node";
 import path from "path";
 import defaultProject from "./data/default.json";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Page, Project } from "./data/types";
+import { Page, Project, GlobalProperties } from "./data/types";
 
 export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
     const {slug} = req.query;
@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
         return resp.status(400).json({ error: 'Invalid slug format' });
       }
     const [action, ...parameters] = slug;
-    const db = JSONFileSyncPreset(path.join(process.cwd(), 'project.json'), defaultProject);
+    const db = JSONFileSyncPreset<Project>(path.join(process.cwd(), 'project.json'), defaultProject);
 
     
     switch (action) {
@@ -18,12 +18,16 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
             if (req.method === 'GET') {
                 resp.status(200).json({project: db.data as Project});
             } else {
-                const {currentRoute, routeProperties}: {currentRoute: string, routeProperties: Page} = req.body;
+                const {currentRoute, routeProperties}: {currentRoute: string | null, routeProperties: Page} = req.body;
                 try {
-                    db.data.routes = {
-                        ...db.data.routes,
-                        [currentRoute]: routeProperties
-                    };
+                    if (currentRoute) {
+                        db.data.routes = {
+                            ...db.data.routes,
+                            [currentRoute]: routeProperties
+                        };
+                    } else {
+                        db.data.global = routeProperties as GlobalProperties;
+                    }
                     await db.write();
                     resp.status(200).json({success: true});
                 } catch(err) {

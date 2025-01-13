@@ -81,7 +81,7 @@
       "forms": []
     },
     "/store/categories/:categorySlug/:productSlug": {
-      "description": "Displays full product details",
+      "description": "Displays full product details with photos",
       "links": [
         {
           "visibleText": "Back to Store",
@@ -101,9 +101,9 @@
       ],
       "forms": [
         {
+          "submitText": "Add to Cart",
           "handlerName": "addToCart",
           "description": "Adds the current product to the user's cart via API",
-          "submitText": "Add to Cart",
           "method": "POST",
           "redirectRoute": "",
           "apiRoute": "/api/cart/addProduct",
@@ -126,10 +126,100 @@
           ]
         }
       ]
+    },
+    "/homepage": {
+      "description": "Shows homepage of storefront with current sale items, mission statement, and feelgood video",
+      "links": [
+        {
+          "visibleText": "Browse the store",
+          "route": "/categories",
+          "templateLocation": "general"
+        },
+        {
+          "visibleText": "View Product",
+          "route": "/categories/:categorySlug/products/:productSlug",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": []
+    },
+    "/orders/cart": {
+      "description": "Current cart details with controls",
+      "links": [
+        {
+          "visibleText": "Continue Shopping",
+          "route": "/store",
+          "templateLocation": "general"
+        }
+      ],
+      "forms": [
+        {
+          "submitText": "Update Item",
+          "handlerName": "updateItemQuantity",
+          "templateLocation": "general"
+        },
+        {
+          "handlerName": "checkOut",
+          "description": "Sends a notice to the server that the checkout process is beginning",
+          "submitText": "Check Out",
+          "method": "POST",
+          "redirectRoute": "/orders/checkout/billing",
+          "apiRoute": "/api/cart/checkoutStart",
+          "templateLocation": "general",
+          "fields": []
+        }
+      ]
+    },
+    "/orders/checkout/billing": {
+      "description": "Shows the form for filling in the billing information of the order checking out",
+      "links": [],
+      "forms": [
+        {
+          "handlerName": "cancelCheckout",
+          "description": "Sends a notice to the server indicating that the cart checkout has been canceled",
+          "submitText": "Cancel",
+          "method": "POST",
+          "redirectRoute": "/store",
+          "apiRoute": "api/cart/checkoutCancel",
+          "templateLocation": "general",
+          "fields": []
+        },
+        {
+          "handlerName": "saveBilling",
+          "description": "Saves the billing information to the order in progress",
+          "submitText": "Proceed to Shipping",
+          "method": "POST",
+          "redirectRoute": "/orders/checkout/shipping",
+          "apiRoute": "api/cart/saveBilling",
+          "templateLocation": "general",
+          "fields": []
+        }
+      ]
+    },
+    "/orders/checkout/shipping": {
+      "description": "Displays the form to specify the shipping info for the order in progress",
+      "links": [],
+      "forms": []
     }
   },
   "global": {
-    "links": [],
+    "links": [
+      {
+        "visibleText": "Posts",
+        "route": "/posts",
+        "templateLocation": "general"
+      },
+      {
+        "visibleText": "Browse the Store",
+        "route": "/store",
+        "templateLocation": "general"
+      },
+      {
+        "visibleText": "View Cart",
+        "route": "/orders/cart",
+        "templateLocation": "general"
+      }
+    ],
     "forms": []
   }
 }

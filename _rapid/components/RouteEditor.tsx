@@ -1,5 +1,5 @@
 import React, { ReactElement, SyntheticEvent } from "react";
-import { Form, Link, Page } from "../data/types";
+import { Form, GlobalProperties, Link, Page } from "../data/types";
 import useRapid from "../hooks/useRapid";
 
 interface RouteEditorProps {
@@ -7,7 +7,7 @@ interface RouteEditorProps {
 }
 
 export default function RouteEditor({routeProperties}: RouteEditorProps): ReactElement {
-    const {dispatchSaveRoute, dispatchSetIsEditing, dispatchSetCurrentFormIndex, isEditing} = useRapid();
+    const {currentRoute, dispatchSaveRoute, dispatchSaveGlobals, dispatchSetIsEditing, dispatchSetCurrentFormIndex, isEditing} = useRapid();
 
     /**
      * Form submit handler to build a Page object and submit it to global state
@@ -42,7 +42,13 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             } as Form))
             .filter((editableForm: Form) => editableForm.submitText.length > 0);
 
-        dispatchSaveRoute(newRouteProperties as Page);
+        
+        if (currentRoute) {
+            dispatchSaveRoute(newRouteProperties as Page);
+        } else {
+            delete newRouteProperties.description;
+            dispatchSaveGlobals(newRouteProperties as GlobalProperties);
+        }
         evt.preventDefault();
     };
 
@@ -63,13 +69,15 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
 
     return <form onSubmit={handleFormSubmit}>
         <section>
-            <div className="fieldgroup">
-                <label>
-                    <strong>Description:</strong>
-                    <br />
-                    <textarea name="description" id="description" defaultValue={routeProperties?.description}></textarea>
-                </label>
-            </div>
+            {
+                currentRoute !== null && <div className="fieldgroup">
+                    <label>
+                        <strong>Description:</strong>
+                        <br />
+                        <textarea name="description" id="description" defaultValue={routeProperties?.description}></textarea>
+                    </label>
+                </div>
+            }
             <div>
                 <strong>Links:</strong>
                 {

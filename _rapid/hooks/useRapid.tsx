@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect } from "react";
-import { saveRoute, setCurrentFormIndex, setCurrentRoute, setIsEditing, setProject } from "../context/actions";
+import { editGlobals, saveGlobals, saveRoute, setCurrentFormIndex, setCurrentRoute, setIsEditing, setProject } from "../context/actions";
 import { useRapidContext } from "../context/store";
-import { Page, Project } from "../data/types";
+import { GlobalProperties, Page, Project } from "../data/types";
 import { usePathname } from "next/navigation";
-import { selectCurrentFormIndex, selectCurrentRoute, selectIsEditing, selectRouteProperties } from "../context/selectors";
+import { selectCurrentFormIndex, selectCurrentRoute, selectGlobals, selectIsEditing, selectProject, selectRouteProperties } from "../context/selectors";
 
 export default function useRapid() {
   const { state, dispatch } = useRapidContext();
@@ -19,7 +19,7 @@ export default function useRapid() {
   };
 
   useEffect(() => {
-    if (!pathName || (state.currentRoute && state.currentRoute === pathName)) {
+    if (!pathName || state.isEditing || (state.currentRoute && state.currentRoute === pathName)) {
       return;
     }
     dispatch(setCurrentRoute(pathName));
@@ -27,6 +27,12 @@ export default function useRapid() {
 
   useEffect(() => {
     if (!state.project) {
+      const storedProject = localStorage.getItem('project');
+      if (storedProject) {
+        const projectFromJSON = JSON.parse(storedProject);
+        dispatch(setProject(projectFromJSON as Project));
+        return;
+      }
       fetch('/api/_rapid/project')
         .then((response) => {
           if (!response.ok) {
@@ -36,6 +42,7 @@ export default function useRapid() {
         })
         .then((data) => {
           if (data && data.project) {
+            localStorage.setItem('project', JSON.stringify(data.project));
             dispatch(setProject(data.project as Project));
           } else {
             console.error("Invalid project data:", data);
@@ -47,7 +54,7 @@ export default function useRapid() {
     }
   }, [state.project, dispatch]); 
 
-  const saveRouteToDisk = (routeProperties: Page) => {
+  const saveRouteToDisk = (routeProperties: Page | GlobalProperties) => {
     fetch('/api/_rapid/project', {
             method: 'POST',
             body: JSON.stringify({
@@ -60,18 +67,42 @@ export default function useRapid() {
         });
   };
 
+  const saveProjectToLocalStorage = (routeProperties: Page | GlobalProperties) => {
+    const project = selectProject(state);
+    const currentRoute = selectCurrentRoute(state);
+    if (!project) {
+      return;
+    }
+    if (currentRoute) {
+      project.routes[currentRoute] = routeProperties;
+    } else {
+      project.global = routeProperties;
+    }
+    localStorage.setItem('project', JSON.stringify(project));
+  };
+
   return {
     currentRoute: selectCurrentRoute(state),
     routeFound: Boolean(selectRouteProperties(state)),
     routeProperties: (selectRouteProperties(state) ?? defaultRouteProperties) as Page,
     isEditing: selectIsEditing(state),
+    isLoaded: Boolean(selectProject(state)),
     currentFormIndex: selectCurrentFormIndex(state),
+    globals: selectGlobals(state),
 
     dispatchSaveRoute: (routeProperties: Page) => {
         dispatch(saveRoute(routeProperties));
         saveRouteToDisk(routeProperties);
+        saveProjectToLocalStorage(routeProperties);
+    },
+    dispatchSaveGlobals: (globalProperties: GlobalProperties) => {
+      dispatch(saveGlobals(globalProperties));
+      saveRouteToDisk(globalProperties);
+      saveProjectToLocalStorage(globalProperties);
+      window.location.reload();
     },
     dispatchSetIsEditing: (isEditing: boolean) => dispatch(setIsEditing(isEditing)),
     dispatchSetCurrentFormIndex: (currentForm: number | null) => dispatch(setCurrentFormIndex(currentForm)),
+    dispatchEditGlobals: () => dispatch(editGlobals()),
   };
 }

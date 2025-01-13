@@ -24,17 +24,19 @@ export type Form = {
 };
 
 export type Page = {
-    description: string;
+    description?: string;
     links: Link[];
     forms: Form[];
 };
 
+export type GlobalProperties = {
+  links: Link[];
+  forms: Form[];
+};
+
 export type Project = {
   routes: Record<string, Page>;
-  global: {
-    links: Link[];
-    forms: Form[];
-  };
+  global: GlobalProperties;
 };
 
 export type ProjectState = {
@@ -51,3 +53,5 @@ export type ProjectAction =
   | { type: "SAVE_ROUTE", payload: Page }
   | { type: "SET_IS_EDITING", payload: boolean }
   | { type: "SET_CURRENT_FORM", payload: number | null }
+  | { type: "EDIT_GLOBALS" }
+  | { type: "SAVE_GLOBALS", payload: GlobalProperties }

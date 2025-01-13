@@ -9,10 +9,15 @@ import RouteViewer from "./RouteViewer";
 export const isDevMode = process.env.NODE_ENV === 'development';
 
 function NotFound() {
-  const {currentRoute, currentFormIndex, routeFound, isEditing, routeProperties} = useRapid();
+  const {currentRoute, currentFormIndex, routeFound, isEditing, isLoaded, routeProperties} = useRapid();
   const currentForm = routeFound && currentFormIndex !== null && routeProperties.forms[currentFormIndex] ? routeProperties.forms[currentFormIndex] : null;
+  
+  if (!isLoaded) {
+    return 'Loading...';
+  }
+  
   return <section>
-    <h1>Current Route: {currentRoute}</h1>
+    <h1>Current Route: {isEditing && !currentRoute? 'Globals' : currentRoute}</h1>
     {
       currentForm
         ? !isEditing && <CurrentFormViewer {...{currentForm}} /> || <CurrentFormEditor {...{currentForm}} />

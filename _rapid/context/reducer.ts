@@ -47,6 +47,23 @@ const appReducer = (state: ProjectState = getInitialState(), action: ProjectActi
           isEditing: action.payload
         };
 
+      case "EDIT_GLOBALS":
+        return {
+          ...state,
+          isEditing: true,
+          currentRoute: null,
+        };
+
+      case "SAVE_GLOBALS":
+        return {
+          ...state,
+          isEditing: false,
+          project: {
+            ...state.project,
+            global: action.payload,
+          } as Project,
+        };
+
       default:
         return state; 
     }

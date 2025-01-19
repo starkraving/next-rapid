@@ -3,7 +3,7 @@ import { Form, GlobalProperties, Link, Page } from "../data/types";
 import useRapid from "../hooks/useRapid";
 
 interface RouteEditorProps {
-    routeProperties: Page
+    routeProperties: Page | GlobalProperties
 }
 
 export default function RouteEditor({routeProperties}: RouteEditorProps): ReactElement {
@@ -125,7 +125,10 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             </div>
             <div className="buttons">
                 {
-                    isEditing && <button type="button" onClick={() => dispatchSetIsEditing(false)}>Cancel</button>
+                    isEditing && currentRoute && <button type="button" onClick={() => dispatchSetIsEditing(false)}>Cancel</button>
+                }
+                {
+                    isEditing && !currentRoute && <button type="button" onClick={() => window.location.reload()}>Cancel</button>
                 }
                 <button type="submit">Apply</button>
             </div>

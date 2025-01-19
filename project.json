@@ -210,7 +210,7 @@
         "templateLocation": "general"
       },
       {
-        "visibleText": "Browse the Store",
+        "visibleText": "Store",
         "route": "/store",
         "templateLocation": "general"
       },

@@ -34,10 +34,6 @@ export default function RouteVieewer({routeProperties}: RouteViewerProps) {
                     </ul>
                 </>
             }
-            <div className="buttons">
-                <button type="button" onClick={() => dispatchSetIsEditing(true)}>Edit Route</button>
-                <button type="button" onClick={() => dispatchEditGlobals()}>Edit Globals</button>
-            </div>
         </section>
         <section style={{marginTop: '1em', borderTop: '1px solid #ccc', paddingTop: '1em'}}>
             {

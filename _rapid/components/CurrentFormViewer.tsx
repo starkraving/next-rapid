@@ -8,7 +8,7 @@ interface CurrentFormViewerProps {
 }
 
 export default function CurrentFormViewer({currentForm}: CurrentFormViewerProps): ReactElement {
-    const { currentRoute, currentFormIndex, dispatchSetCurrentFormIndex, dispatchSetIsEditing } = useRapid();
+    const { currentRoute, currentFormIndex, dispatchSetCurrentFormIndex } = useRapid();
     return (
         <div>
             <h2>Current Form: {currentForm.handlerName ?? `Form # ${currentFormIndex}`}</h2>
@@ -21,7 +21,6 @@ export default function CurrentFormViewer({currentForm}: CurrentFormViewerProps)
                         && <Link href={currentForm.redirectRoute}>Redirect to {currentForm.redirectRoute}</Link>
                         || <button type="button" onClick={() => dispatchSetCurrentFormIndex(null)}>Done</button>
                 }
-                <button type="button" onClick={() => dispatchSetIsEditing(true)}>Edit Form</button>
             </p>
         </div>
     )

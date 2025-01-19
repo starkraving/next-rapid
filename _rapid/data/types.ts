@@ -30,6 +30,7 @@ export type Page = {
 };
 
 export type GlobalProperties = {
+  description?: string;
   links: Link[];
   forms: Form[];
 };

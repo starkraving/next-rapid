@@ -22,11 +22,10 @@ function NotFound() {
   }
   
   return <section>
-    <h1>Current Route: {isEditing && !currentRoute? 'Globals' : currentRoute}</h1>
     {
-      currentForm
+      (currentForm !== null)
         ? !isEditing && <CurrentFormViewer {...{currentForm}} /> || <CurrentFormEditor {...{currentForm}} />
-        : routeFound && !isEditing ? <RouteViewer {...{routeProperties}} /> : <RouteEditor {...{routeProperties}} />
+        : routeFound && !isEditing && <RouteViewer {...{routeProperties}} /> || <RouteEditor {...{routeProperties}} />
     }
   </section>
 };
@@ -38,4 +37,11 @@ function ContextualNotFound() {
   </RapidContextProvider>;
 }
 
-export default ContextualNotFound;
+const CombinedNotFound = ({template}: {template: string}) => {
+  return <>
+    <ContextualNotFound />
+    <div id="prototype_template" dangerouslySetInnerHTML={{__html: template}} />
+  </>;
+};
+
+export default CombinedNotFound;

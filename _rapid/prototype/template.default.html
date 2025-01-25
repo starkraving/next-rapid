@@ -1,0 +1,29 @@
+<template>
+    <!-- rapid-route-start -->
+    <main>
+        <div>{{description}}</div>
+        <!-- rapid-link-block-start="general" -->
+        <section>
+            <h3>Links</h3>
+            <ul>
+                <!-- rapid-link-repeat-start="general" -->
+                <li><a href="{{route}}">{{visibleText}}</a></li>
+                <!-- rapid-link-repeat-end="general" -->
+            </ul>
+        </section>
+        <!-- rapid-link-block-end="general" -->
+    </main>
+    <!-- rapid-route-end -->
+    <footer style="border-top: 1px solid #ccc; padding-top: .5em; margin-top: .5em;">
+        <!-- rapid-link-block-start="global" -->
+        <section>
+            <h3>Global Links</h3>
+            <ul>
+                <!-- rapid-link-repeat-start="global" -->
+                <li><a href="{{route}}">{{visibleText}}</a></li>
+                <!-- rapid-link-repeat-end="global" -->
+            </ul>
+        </section>
+        <!-- rapid-link-block-end="global" -->
+    </footer>
+</template>

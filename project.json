@@ -207,17 +207,17 @@
       {
         "visibleText": "Posts",
         "route": "/posts",
-        "templateLocation": "general"
+        "templateLocation": "global"
       },
       {
         "visibleText": "Store",
         "route": "/store",
-        "templateLocation": "general"
+        "templateLocation": "global"
       },
       {
         "visibleText": "View Cart",
         "route": "/orders/cart",
-        "templateLocation": "general"
+        "templateLocation": "global"
       }
     ],
     "forms": []

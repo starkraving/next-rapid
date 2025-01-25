@@ -27,7 +27,7 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             .map((visibleText, i) => ({
                 visibleText,
                 route: arRoute[i],
-                templateLocation: 'general' 
+                templateLocation: currentRoute !== null ? 'general' : 'global'
             } as Link))
             .filter((editableLink: Link) => editableLink.visibleText.length > 0);
 

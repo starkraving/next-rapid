@@ -10,7 +10,7 @@ interface CurrentFormViewerProps {
 export default function CurrentFormViewer({currentForm}: CurrentFormViewerProps): ReactElement {
     const { currentRoute, currentFormIndex, dispatchSetCurrentFormIndex } = useRapid();
     return (
-        <div className="ml-auto mr-auto max-w-[1020px] pl-[20px] pr-[20px] py-[20px] format">
+        <div className="mx-auto max-w-screen-lg pl-4 pr-4 py-4 format">
             <h2>Current Form: {currentForm.handlerName ?? `Form # ${currentFormIndex}`}</h2>
             <p>
                 {currentForm.description}

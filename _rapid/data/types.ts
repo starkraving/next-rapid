@@ -8,8 +8,8 @@ export type FormField = {
   inputType: "hidden" | "text" | "textarea" | "radio" | "checkbox" | "select" | "url" | "email" | "password" | "number" | "date" | "color";
   name: string;
   labelText: string;
-  options?: string[];
-  additionalAttributes?: string;
+  options: string[];
+  additionalAttributes: string;
 };
 
 export type Form = {
@@ -21,6 +21,8 @@ export type Form = {
   method: "GET" | "POST" | "PUT" | "DELETE";
   templateLocation?: string;
   fields: FormField[];
+  index?: number;
+  currentRoute?: string | null;
 };
 
 export type Page = {

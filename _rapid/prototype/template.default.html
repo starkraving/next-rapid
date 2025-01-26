@@ -1,6 +1,6 @@
 <template>
     <!-- rapid-route-start -->
-    <main>
+    <main class="ml-auto mr-auto max-w-[1020px] pl-[20px] pr-[20px] py-[20px] format">
         <div>{{description}}</div>
         <!-- rapid-link-block-start="general" -->
         <section>
@@ -12,12 +12,51 @@
             </ul>
         </section>
         <!-- rapid-link-block-end="general" -->
+        <!-- rapid-form-block-start="general" -->
+        <section>
+            <h3>Forms</h3>
+            <!-- rapid-form-repeat-start="general" -->
+            <form method="post" data-rapid-form-attributes="general">
+                <!-- rapid-field-start="general" -->
+                <!-- rapid-field-hidden-start="general" -->
+                <input type="hidden" name="{{name}}" data-rapid-field-attributes="general" />
+                <!-- rapid-field-hidden-end="general" -->
+                <!-- rapid-field-input-start="general" -->
+                <div class="mb-6">
+                    <label for="{{name}}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{labelText}}</label>
+                    <input type="{{inputType}}" name="{{name}}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" data-rapid-field-attributes="general" />
+                </div>
+                <!-- rapid-field-input-end="general" -->
+                <!-- rapid-field-textarea-start="general" -->
+                <div class="mb-6">
+                    <label for="{{name}}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{labelText}}</label>
+                    <textarea name="{{name}}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" data-rapid-field-attributes="general"></textarea>
+                </div>
+                <!-- rapid-field-textarea-end="general" -->
+                 <!-- rapid-field-select-start="general" -->
+                <div class="mb-6">
+                    <label for="{{name}}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{labelText}}</label>
+                    <select name="{{name}}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" data-rapid-field-attributes="general">{{options}}</select>
+                </div>
+                <!-- rapid-field-select-end="general" -->
+                <!-- rapid-field-checkbox-start="general" -->
+                <div class="flex items-center mb-4">
+                    <input name="{{name}}" type="{{inputType}}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" data-rapid-field-attributes="general">
+                    <label for="{{name}}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{labelText}}</label>
+                </div>
+                <!-- rapid-field-checkbox-end="general" -->
+                <!-- rapid-field-end="general" -->
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{{submitText}}</button>
+            </form>
+            <!-- rapid-form-repeat-end="general" -->
+        </section>
+        <!-- rapid-form-block-end="general" -->
     </main>
     <!-- rapid-route-end -->
-    <footer style="border-top: 1px solid #ccc; padding-top: .5em; margin-top: .5em;">
+    <footer class="mx-[auto] my-[0] max-w-[1020px] pl-[20px] pr-[20px] py-[10px] [border-top:1px_solid_#ccc] format">
         <!-- rapid-link-block-start="global" -->
         <section>
-            <h3>Global Links</h3>
+            <h3 class="font-bold text-[1.2em] mt-1">Global Links</h3>
             <ul>
                 <!-- rapid-link-repeat-start="global" -->
                 <li><a href="{{route}}">{{visibleText}}</a></li>

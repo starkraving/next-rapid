@@ -21,7 +21,7 @@ function NotFound() {
     return 'Loading...';
   }
   
-  return <section>
+  return <section className="flex-1">
     {
       (currentForm !== null)
         ? !isEditing && <CurrentFormViewer {...{currentForm}} /> || <CurrentFormEditor {...{currentForm}} />
@@ -32,16 +32,16 @@ function NotFound() {
 
 function ContextualNotFound() {
   return <RapidContextProvider>
-    <NotFound />
     <ContextualActions />
+    <NotFound />
   </RapidContextProvider>;
 }
 
 const CombinedNotFound = ({template}: {template: string}) => {
-  return <>
+  return <div className="flex">
     <ContextualNotFound />
     <div id="prototype_template" dangerouslySetInnerHTML={{__html: template}} />
-  </>;
+  </div>;
 };
 
 export default CombinedNotFound;

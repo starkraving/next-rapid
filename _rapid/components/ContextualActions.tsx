@@ -16,12 +16,30 @@ export const ViewRouteActions = (): ReactElement => {
     </>
 }
 
-export const ViewRouteInstructions = () => (
+export const ViewRouteInstructions = (): ReactElement => (
     <>
         <p className="text-small"> 
             Define links that will go to other routes in the app. Then after you
             apply your changes, you can click on the link to visit that route.
             If it doesn't exist, you can create it in a new route form.
+        </p>
+        <p className="text-small">
+            You can also define forms that will be used to perform actions on
+            the page, or submit data to the server. After you apply your changes,
+            you can click on the form to simulate submitting data.
+            You can then edit the form action to customize it or specify inputs.
+        </p>
+    </>
+);
+
+export const ViewFormInstructions = (): ReactElement => (
+    <>
+        <p className="text-small">
+            Define the metadata for the form, such as the submit text, form method, etc.
+        </p>
+        <p className="text-small">
+            You can also define the inputs that will be used in the form. You can specify
+            the type of input, the label text, and any additional attributes as a string.
         </p>
     </>
 );
@@ -41,7 +59,7 @@ const ContextualActions = (): ReactElement => {
         <div className="flex flex-col gap-4 mt-4">
             {
             currentForm
-                ? !isEditing && <ViewFormActions /> || null
+                ? !isEditing && <ViewFormActions /> || <ViewFormInstructions />
                 : routeFound && !isEditing && <ViewRouteActions /> || <ViewRouteInstructions />
             }
         </div>

@@ -68,30 +68,33 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
 
 
     return <form onSubmit={handleFormSubmit}>
-        <section>
-            {
-                currentRoute !== null && <div className="fieldgroup">
-                    <label>
-                        <strong>Description:</strong>
-                        <br />
-                        <textarea name="description" id="description" defaultValue={routeProperties?.description}></textarea>
-                    </label>
-                </div>
-            }
-            <div>
-                <strong>Links:</strong>
+        <section className="bg-white p-6 pt-1 rounded-md shadow-md mt-6 max-w-screen-xl mx-auto format">
+            <h2 className="mb-2">{currentRoute ? `Route: ${currentRoute}` : 'Globals'}</h2>
+            { currentRoute !== null && (
+                <>
+                    <label className="block text-sm font-medium text-gray-700">Page Description</label>
+                    <textarea name="description" id="description" defaultValue={routeProperties?.description} className="w-full border rounded-md p-2 mt-1"></textarea>
+                </>
+            )}
+        </section>
+
+        {/* =============== Links Section ================== */}
+        <section className="bg-white p-6 rounded-md shadow-md mt-6 max-w-screen-xl mx-auto format">
+            <h3 className="mb-2">Links:</h3>
+
+            <div className="space-y-4">
                 {
                     editableLinks.map((link, index) => {
                         const {visibleText, route, ...additionalLinkProps} = link;
                         return (
-                            <div key={`link_${index}`} className="fieldgroup">
-                                <label>
-                                    <span>Visible Text</span>
-                                    <input type="text" name="visibleText" id={`visibleText_${index}`} defaultValue={visibleText} />
+                            <div key={`link_${index}`} className="flex items-center space-x-2">
+                                <label className="flex-1">
+                                    <span className="block text-sm font-medium text-gray-700">Visible Text</span>
+                                    <input type="text" name="visibleText" id={`visibleText_${index}`} defaultValue={visibleText} className="w-full border rounded-md p-2 mt-1" />
                                 </label>
-                                <label>
-                                    <span>Route</span>
-                                    <input type="text" name="route" id={`route_${index}`} defaultValue={route} />
+                                <label className="flex-1">
+                                    <span className="block text-sm font-medium text-gray-700">Link Address</span>
+                                    <input type="text" name="route" id={`route_${index}`} defaultValue={route} className="w-full border rounded-md p-2 mt-1" />
                                 </label>
                                 <input type="hidden" name="additionalLinkProps" id={`additionalLinkProps_${index}`} value={JSON.stringify(additionalLinkProps)} />
                             </div>
@@ -99,39 +102,37 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
                     })
                 }
             </div>
-            <div>
-                <strong>Forms</strong>
-                {
-                    editableForms.map((form, index) => {
-                        const {submitText, handlerName, ...additionalFormProps} = form;
-                        return (
-                            <div key={`form_${index}`} className="formgroup">
-                                <label>
-                                    <span>Submit Text:</span>
-                                    <input type="text" name="submitText" id={`submitText_${index}`} defaultValue={submitText} />
-                                </label>
-                                <label>
-                                    <span>Handler Name (onSubmit)</span>
-                                    <input type="text" name="handlerName" id={`handlerLane_${index}`} defaultValue={handlerName} />
-                                </label>
-                                <input type="hidden" name="additionalFormProps" id={`additionalFormProps_${index}`} value={JSON.stringify(additionalFormProps ?? {})} />
-                                {
-                                    submitText.length > 0 && <button type="button" onClick={() => dispatchSetCurrentFormIndex(index)}>Edit Form</button>
-                                }
-                            </div>
-                        )
-                    })
-                }
-            </div>
-            <div className="buttons">
-                {
-                    isEditing && currentRoute && <button type="button" onClick={() => dispatchSetIsEditing(false)}>Cancel</button>
-                }
-                {
-                    isEditing && !currentRoute && <button type="button" onClick={() => window.location.reload()}>Cancel</button>
-                }
-                <button type="submit">Apply</button>
-            </div>
+        </section>
+        <section className="bg-white p-6 rounded-md shadow-md mt-6 max-w-screen-xl mx-auto format">
+            <h3>Forms</h3>
+            {
+                editableForms.map((form, index) => {
+                    const {submitText, handlerName, ...additionalFormProps} = form;
+                    return (
+                        <div key={`form_${index}`} className="flex items-center space-x-2">
+                            <label className="flex-1">
+                                <span className="block text-sm font-medium text-gray-700">Submit Text:</span>
+                                <input type="text" name="submitText" id={`submitText_${index}`} defaultValue={submitText} className="w-full border rounded-md p-2 mt-1" />
+                            </label>
+                            <label className="flex-1">
+                                <span className="block text-sm font-medium text-gray-700">Handler Name (onSubmit)</span>
+                                <input type="text" name="handlerName" id={`handlerLane_${index}`} defaultValue={handlerName} className="w-full border rounded-md p-2 mt-1" />
+                            </label>
+                            <input type="hidden" name="additionalFormProps" id={`additionalFormProps_${index}`} value={JSON.stringify(additionalFormProps ?? {})} />
+                        </div>
+                    )
+                })
+            }
+        </section>
+        {/* ================= Action Buttons ================== */}
+        <section className="mt-6 flex justify-end space-x-2 max-w-screen-xl mx-auto pb-6">
+            {
+                isEditing && currentRoute && <button className="px-4 py-2 border rounded-md text-gray-700" type="button" onClick={() => dispatchSetIsEditing(false)}>Cancel</button>
+            }
+            {
+                isEditing && !currentRoute && <button className="px-4 py-2 border rounded-md text-gray-700" type="button" onClick={() => window.location.reload()}>Cancel</button>
+            }
+            <button className="px-4 py-2 bg-gray-900 text-white rounded-md" type="submit">Apply</button>
         </section>
     </form>
 

@@ -27,12 +27,14 @@ export type Form = {
 
 export type Page = {
     description?: string;
+    isStatic?: boolean;
     links: Link[];
     forms: Form[];
 };
 
 export type GlobalProperties = {
   description?: string;
+  isStatic?: boolean;
   links: Link[];
   forms: Form[];
 };

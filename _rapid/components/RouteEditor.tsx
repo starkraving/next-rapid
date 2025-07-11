@@ -17,6 +17,7 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
         const formData = new FormData(evt.target as HTMLFormElement);
         const newRouteProperties = {
             description: formData.get('description'),
+            isStatic: formData.get('isStatic') === 'on',
             links: [],
             forms: []
         } as Page;
@@ -47,6 +48,7 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             dispatchSaveRoute(newRouteProperties as Page);
         } else {
             delete newRouteProperties.description;
+            delete newRouteProperties.isStatic;
             dispatchSaveGlobals(newRouteProperties as GlobalProperties);
         }
         evt.preventDefault();
@@ -72,8 +74,14 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             <h2 className="mb-2">{currentRoute ? `Route: ${currentRoute}` : 'Globals'}</h2>
             { currentRoute !== null && (
                 <>
-                    <label className="block text-sm font-medium text-gray-700">Page Description</label>
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">Page Description</label>
                     <textarea name="description" id="description" defaultValue={routeProperties?.description} className="w-full border rounded-md p-2 mt-1"></textarea>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mt-4">
+                            <input type="checkbox" name="isStatic" id="isStatic" value="on" defaultChecked={routeProperties?.isStatic} className="mr-2" />
+                            <span>Statically rendered route</span>
+                        </label>
+                    </div>
                 </>
             )}
         </section>

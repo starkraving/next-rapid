@@ -154,9 +154,14 @@
       ],
       "forms": [
         {
-          "submitText": "Update Item",
           "handlerName": "updateItemQuantity",
-          "templateLocation": "general"
+          "description": "Updates the quantity for an item in the user's cart",
+          "submitText": "Update Item",
+          "method": "POST",
+          "redirectRoute": "",
+          "apiRoute": "",
+          "templateLocation": "general",
+          "fields": []
         },
         {
           "handlerName": "checkOut",
@@ -200,6 +205,12 @@
       "description": "Displays the form to specify the shipping info for the order in progress",
       "links": [],
       "forms": []
+    },
+    "/support": {
+      "description": "Displays general contact info and methods of support",
+      "isStatic": true,
+      "links": [],
+      "forms": []
     }
   },
   "global": {
@@ -217,6 +228,11 @@
       {
         "visibleText": "View Cart",
         "route": "/orders/cart",
+        "templateLocation": "global"
+      },
+      {
+        "visibleText": "Contact Us",
+        "route": "/support",
         "templateLocation": "global"
       }
     ],

@@ -1,11 +1,28 @@
 "use client"
 
 import { useEffect } from "react";
-import { editGlobals, saveGlobals, saveRoute, setCurrentFormIndex, setCurrentRoute, setIsEditing, setProject } from "../context/actions";
+import {
+  editGlobals,
+  saveGlobals,
+  saveRoute,
+  setCurrentFormIndex,
+  setCurrentRoute,
+  setIsEditing,
+  setIsPreviewing,
+  setProject
+} from "../context/actions";
 import { useRapidContext } from "../context/store";
 import { GlobalProperties, Page, Project } from "../data/types";
 import { usePathname } from "next/navigation";
-import { selectCurrentFormIndex, selectCurrentRoute, selectGlobals, selectIsEditing, selectProject, selectRouteProperties } from "../context/selectors";
+import {
+  selectCurrentFormIndex,
+  selectCurrentRoute,
+  selectGlobals,
+  selectIsEditing,
+  selectIsPreviewing,
+  selectProject,
+  selectRouteProperties
+} from "../context/selectors";
 
 export default function useRapid() {
   const { state, dispatch } = useRapidContext();
@@ -86,6 +103,7 @@ export default function useRapid() {
     routeFound: Boolean(selectRouteProperties(state)),
     routeProperties: (selectRouteProperties(state) ?? defaultRouteProperties) as Page,
     isEditing: selectIsEditing(state),
+    isPreviewing: selectIsPreviewing(state),
     isLoaded: Boolean(selectProject(state)),
     currentFormIndex: selectCurrentFormIndex(state),
     globals: selectGlobals(state),
@@ -104,5 +122,6 @@ export default function useRapid() {
     dispatchSetIsEditing: (isEditing: boolean) => dispatch(setIsEditing(isEditing)),
     dispatchSetCurrentFormIndex: (currentForm: number | null) => dispatch(setCurrentFormIndex(currentForm)),
     dispatchEditGlobals: () => dispatch(editGlobals()),
+    dispatchSetIsPreviewing: (isPreviewing: boolean) => dispatch(setIsPreviewing(isPreviewing)),
   };
 }

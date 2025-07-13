@@ -18,3 +18,5 @@ export const selectGlobals = (state: ProjectState): GlobalProperties => {
 export const selectCurrentFormIndex = (state: ProjectState): number | null => state.currentFormIndex;
 
 export const selectIsEditing = (state: ProjectState): Boolean => state.isEditing;
+
+export const selectIsPreviewing = (state: ProjectState): Boolean => state.isPreviewing;

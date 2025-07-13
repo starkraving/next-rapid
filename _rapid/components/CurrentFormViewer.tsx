@@ -5,10 +5,13 @@ import Link from 'next/link';
 import makeTemplateHTML from '../prototype/libs/makeTemplateHTML';
 
 interface CurrentFormViewerProps {
-    currentForm: Form;
+    currentForm: Form | null;
 }
 
 export default function CurrentFormViewer({currentForm}: CurrentFormViewerProps): ReactElement {
+    if (!currentForm) {
+        return <></>;
+    }
     const { currentRoute, currentFormIndex, dispatchSetCurrentFormIndex } = useRapid();
 
     const description = `<h2>Current Form: ${currentForm.handlerName ?? `Form # ${currentFormIndex}`}</h2>

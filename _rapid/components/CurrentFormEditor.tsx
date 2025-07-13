@@ -3,10 +3,13 @@ import { Form, FormField } from '../data/types';
 import useRapid from '../hooks/useRapid';
 
 interface CurrentFormEditorProps {
-    currentForm: Form;
+    currentForm: Form | null;
 };
 
 export default function CurrentFormEditor({currentForm}: CurrentFormEditorProps): ReactElement {
+    if (!currentForm) {
+        return <></>;
+    }
     const { currentRoute, routeProperties, currentFormIndex, dispatchSaveRoute, dispatchSetIsEditing } = useRapid();
     const handleSubmit = (evt: SyntheticEvent) => {
         if (currentFormIndex === null) return;

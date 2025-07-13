@@ -5,6 +5,7 @@ export const getInitialState = (): ProjectState => ({
     currentRoute: null,
     currentFormIndex: null,
     isEditing: false,
+    isPreviewing: false,
 });
 
 const appReducer = (state: ProjectState = getInitialState(), action: ProjectAction): ProjectState => {
@@ -45,6 +46,12 @@ const appReducer = (state: ProjectState = getInitialState(), action: ProjectActi
         return {
           ...state,
           isEditing: action.payload
+        };
+
+      case "SET_IS_PREVIEWING":
+        return {
+          ...state,
+          isPreviewing: action.payload,
         };
 
       case "EDIT_GLOBALS":

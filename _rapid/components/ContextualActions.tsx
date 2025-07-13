@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import useRapid from '../hooks/useRapid';
+import match from '../libs/match';
 
 export const ViewFormActions = (): ReactElement => {
     const {dispatchSetIsEditing} = useRapid();
@@ -8,13 +9,26 @@ export const ViewFormActions = (): ReactElement => {
 };
 
 export const ViewRouteActions = (): ReactElement => {
-    const {dispatchSetIsEditing, dispatchEditGlobals} = useRapid();
+    const {dispatchSetIsEditing, dispatchEditGlobals, dispatchSetIsPreviewing} = useRapid();
 
     return <>
+        {/* Authoring Actions */}
         <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsEditing(true)}>Edit Route</button>
         <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchEditGlobals()}>Edit Globals</button>
+        
+        {/* Add spacing */}
+        <div className="my-6"></div>
+
+        {/* Code Actions */}
+        <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPreviewing(true)}>Preview Code</button>
     </>
 }
+
+export const PreviewRouteActions = (): ReactElement => {
+    const {dispatchSetIsPreviewing} = useRapid();
+
+    return <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPreviewing(false)}>Exit Preview</button>
+}   
 
 export const ViewRouteInstructions = (): ReactElement => (
     <>
@@ -43,12 +57,21 @@ export const ViewFormInstructions = (): ReactElement => (
         </p>
     </>
 );
-
-const ContextualActions = (): ReactElement => {
-    const {routeProperties, isEditing, routeFound, currentFormIndex} = useRapid();
+const ContextualActionsWrapper = (): ReactElement => {
+    const {routeProperties, isEditing, isPreviewing, routeFound, currentFormIndex} = useRapid();
     const currentForm = routeFound && currentFormIndex !== null && routeProperties.forms[currentFormIndex]
     ? routeProperties.forms[currentFormIndex]
     : null;
+
+const ContextualActions = () =>
+    match([
+        [currentForm !== null && !isEditing, () => <ViewFormActions />],
+        [currentForm !== null && !!isEditing, () => <ViewFormInstructions />],
+        [!routeFound || !!isEditing, () => <ViewRouteInstructions />],
+        [!!isPreviewing, () => <PreviewRouteActions />],
+        [true, () => <ViewRouteActions />],
+    ]);
+
     return <aside className="flex-initial p-4 min-h-screen bg-gray-800 text-white w-[190px] format">
         <h2 className="text-white pb-2 border-b border-solid border-white flex gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
@@ -57,13 +80,9 @@ const ContextualActions = (): ReactElement => {
             Next Rapid
         </h2>
         <div className="flex flex-col gap-4 mt-4">
-            {
-            currentForm
-                ? !isEditing && <ViewFormActions /> || <ViewFormInstructions />
-                : routeFound && !isEditing && <ViewRouteActions /> || <ViewRouteInstructions />
-            }
+            <ContextualActions />
         </div>
       </aside>
 };
 
-export default ContextualActions;
+export default ContextualActionsWrapper;

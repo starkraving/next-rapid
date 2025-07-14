@@ -164,9 +164,9 @@ function makeRouteTSX(
                             fieldTemplate = fieldTypes.input;
                     }
                     return fieldTemplate
-                        .replace('{{name}}', field.name)
-                        .replace('{{labelText}}', field.labelText)
-                        .replace('{{inputType}}', field.inputType)
+                        .replace(/{{name}}/g, field.name)
+                        .replace(/{{labelText}}/g, field.labelText)
+                        .replace(/{{inputType}}/g, field.inputType)
                         .replace(`data-rapid-field-attributes="${blockName}"`, field.additionalAttributes)
                         .replace('{{options}}', field.options.map((option) => `<option value="${option}">${option}</option>`).join(''))
                 }).join(''))

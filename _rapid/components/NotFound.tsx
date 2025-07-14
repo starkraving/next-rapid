@@ -39,14 +39,14 @@ function NotFound(): ReactElement {
   </section>
 };
 
-function ContextualNotFound() {
+function ContextualNotFound(): ReactElement {
   return <RapidContextProvider>
     <ContextualActions />
     <NotFound />
   </RapidContextProvider>;
 }
 
-const CombinedNotFound = ({template}: {template: string}) => {
+const CombinedNotFound = ({template}: {template: string}): ReactElement => {
   return <div className="flex">
     <ContextualNotFound />
     <div id="prototype_template" dangerouslySetInnerHTML={{__html: template}} />

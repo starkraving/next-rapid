@@ -3,6 +3,7 @@ import useRapid from '../hooks/useRapid';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';
 import { Page } from '../data/types';
+import makeRouteTSX from '../prototype/libs/makeRouteTSX';
 
 interface RoutePreviewerProps {
     currentRoute: string | null;
@@ -10,19 +11,8 @@ interface RoutePreviewerProps {
 }
 
 const RoutePreviewer = ({currentRoute, routeProperties}: RoutePreviewerProps) => {
-    const code = `
-    import React from 'react';
-
-    const Component = () => {
-        return (
-            <div>
-                Preview!
-            </div>
-        );
-    };
-
-    export default Component;
-    `;
+    const templateHTML = document.querySelector('#prototype_template template')?.innerHTML ?? '';
+    const code = makeRouteTSX(templateHTML, currentRoute ?? '', routeProperties);
 
     useEffect(() => {
         Prism.highlightAll();

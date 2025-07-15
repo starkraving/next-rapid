@@ -66,11 +66,17 @@ function makeRouteTSX(
         templateHTML.indexOf('<!-- rapid-route-end -->')
     );
     
+    // add imports for links and forms if needed
     if (links.length > 0) {
         imports.add('import { Link } from "next/link";');
     }
     if (!isStatic && forms.length > 0) {
         imports.add('import { Form } from "next/form";');
+    }
+
+    // optionally add the declaration for static rendering
+    if (isStatic) {
+        imports.add(`${nl}export const dynamic = 'force-static';`);
     }
 
     // collect route parameters from currentRoute, treating "/:parameter" as a parameter

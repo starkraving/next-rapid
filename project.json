@@ -13,6 +13,7 @@
     },
     "/posts/:postSlug": {
       "description": "View a single post",
+      "isStatic": true,
       "links": [
         {
           "visibleText": "Back to Posts",
@@ -20,7 +21,33 @@
           "templateLocation": "general"
         }
       ],
-      "forms": []
+      "forms": [
+        {
+          "submitText": "Add a Comment",
+          "handlerName": "addPendingComment",
+          "description": "Submits a pending comment to the server",
+          "method": "POST",
+          "redirectRoute": "/posts/:postSlug/commentAdded",
+          "apiRoute": "",
+          "templateLocation": "general",
+          "fields": [
+            {
+              "name": "fullname",
+              "inputType": "text",
+              "labelText": "Full Name",
+              "options": [],
+              "additionalAttributes": ""
+            },
+            {
+              "name": "comment",
+              "inputType": "textarea",
+              "labelText": "Comment",
+              "options": [],
+              "additionalAttributes": ""
+            }
+          ]
+        }
+      ]
     },
     "/store": {
       "description": "Homepage for the storefront, showing featured products and categories",
@@ -101,12 +128,12 @@
       ],
       "forms": [
         {
-          "submitText": "Add to Cart",
           "handlerName": "addToCart",
           "description": "Adds the current product to the user's cart via API",
+          "submitText": "Add to Cart",
           "method": "POST",
           "redirectRoute": "",
-          "apiRoute": "/api/cart/addProduct",
+          "apiRoute": "",
           "templateLocation": "general",
           "fields": [
             {
@@ -169,7 +196,7 @@
           "submitText": "Check Out",
           "method": "POST",
           "redirectRoute": "/orders/checkout/billing",
-          "apiRoute": "/api/cart/checkoutStart",
+          "apiRoute": "",
           "templateLocation": "general",
           "fields": []
         }
@@ -210,6 +237,18 @@
       "description": "Displays general contact info and methods of support",
       "isStatic": true,
       "links": [],
+      "forms": []
+    },
+    "/posts/:postSlug/commentAdded": {
+      "description": "Displays a message thanking the user for their comment",
+      "isStatic": false,
+      "links": [
+        {
+          "visibleText": "Back to Post",
+          "route": "/posts/:postSlug",
+          "templateLocation": "general"
+        }
+      ],
       "forms": []
     }
   },

@@ -6,10 +6,9 @@ function makeRouteTSX(
     routeProperties: Page
 ): string {
     const { description, links = [], forms = [], isStatic = false } = routeProperties;
-    const imports = [
-        'import React from "react";',
-    ];
     const nl = '\n';
+    const imports = new Set<string>(isStatic ? [`use client;${nl}`] : [])
+        .add('import React from "react";')
     const componentName = 'PageComponent';
 
     // convert the flat array of links into an object with templateLocation as keys
@@ -39,6 +38,28 @@ function makeRouteTSX(
                 return collector;
             }, {}
         );
+
+    // build the list of form handler functions
+    const formHandlers = forms.filter(form => form.handlerName.length && !form.apiRoute?.length)
+        .map(form => {
+            if (isStatic) {
+                let redirect = '';
+                if (form.redirectRoute && form.redirectRoute.length) {
+                    redirect = `    router.push('${form.redirectRoute}');${nl}`;
+                    imports.add('import type { FormEvent } from "react";');
+                    imports.add('import { useRouter } from "next/navigation";');
+                }
+                return `  async function ${form.handlerName}(event: FormEvent) {${nl}    // TODO: Implement form handler for ${form.handlerName}${nl}${redirect}    event.preventDefault();${nl}  }`;
+            } else {
+                let redirect = '';
+                if (form.redirectRoute && form.redirectRoute.length) {
+                    redirect = `  redirect('${form.redirectRoute}');${nl}`;
+                    imports.add('import { redirect } from "next/navigation";');
+                }
+                return `export async function ${form.handlerName}(formData: FormData) {${nl}  "use server";${nl}  // TODO: Implement form handler for ${form.handlerName}${nl}${redirect}}`;
+            }
+        })
+        .join(nl + nl);
     
     let prototypeTemplate = templateHTML.substring(
         templateHTML.indexOf('<!-- rapid-route-start -->') + '<!-- rapid-route-start -->'.length,
@@ -46,10 +67,10 @@ function makeRouteTSX(
     );
     
     if (links.length > 0) {
-        imports.push('import { Link } from "next/link";');
+        imports.add('import { Link } from "next/link";');
     }
     if (!isStatic && forms.length > 0) {
-        imports.push('inport { Form } from "next/form";');
+        imports.add('import { Form } from "next/form";');
     }
 
     // collect route parameters from currentRoute, treating "/:parameter" as a parameter
@@ -70,8 +91,8 @@ function makeRouteTSX(
             pagePropsType += `    ${param}: string;${nl}`;
             destructuredProps += `    ${param},${nl}`;
         });
-        pagePropsType += `  }${nl}};${nl}`;
-        destructuredProps += `  } = params;${nl}`;
+        pagePropsType += `  }${nl}};${nl}${nl}`;
+        destructuredProps += `  } = params;${nl}${nl}`;
     }
 
     // replace description placeholder with actual description
@@ -170,7 +191,9 @@ function makeRouteTSX(
                         .replace(`data-rapid-field-attributes="${blockName}"`, field.additionalAttributes)
                         .replace('{{options}}', field.options.map((option) => `<option value="${option}">${option}</option>`).join(''))
                 }).join(''))
-                .replace(`data-rapid-form-attributes="${blockName}"`, `data-index="${form.index}" ${(form.currentRoute ? '' : 'data-global')}`)
+                .replace(`data-rapid-form-attributes="${blockName}"`, `${isStatic ? 'onSubmit' : 'action'}=${form.apiRoute?.length ? `"${form.apiRoute}"` : `{${form.handlerName}}`}`)
+                .replace('<form ', isStatic ? '<form ' : '<Form ')
+                .replace('</form>', isStatic ? '</form>' : '</Form>')
                 .replace('{{submitText}}', form.submitText)
             ).join(''));
     });
@@ -178,10 +201,12 @@ function makeRouteTSX(
     // replace any remaining rapid- placeholders with empty strings
     prototypeTemplate = prototypeTemplate.replace(/<!-- rapid-[^>]+?-->/g, '');
     
-    return imports.join(nl)
+    return Array.from(imports).join(nl)
         + nl + nl
         + pagePropsType
+        + (!isStatic && formHandlers.length > 0 ? formHandlers + nl + nl : '')
         + `export default function ${componentName}(${pageProps}) {${nl}${destructuredProps}`
+        + (isStatic && formHandlers.length > 0 ? `  const router = useRouter();${nl}${nl}${formHandlers}${nl + nl}` : '')
         + `  return (`
         + prototypeTemplate
         + nl + `  );${nl}}`;

@@ -11,6 +11,12 @@ function makeRouteTSX(
         .add('import React from "react";')
     const componentName = 'PageComponent';
 
+    // collect route parameters from currentRoute, treating "/:parameter" as a parameter
+    const routeParams = currentRoute
+        .split('/')
+        .filter(part => part.startsWith(':'))
+        .map(part => part.replace(':', ''));
+
     // convert the flat array of links into an object with templateLocation as keys
     const allLinks = links
         .reduce((collector: { [key: string]: Link[] }, link: Link) => {
@@ -26,18 +32,13 @@ function makeRouteTSX(
         );
         
     // convert the flat array of forms into an object with templateLocation as keys
-    const allForms = forms.map((form: Form, index: number) => ({...form, index, currentRoute}))
+    const allForms = forms
+        .map((form: Form, index: number) => ({ ...form, index, currentRoute }))
         .reduce((collector: { [key: string]: Form[] }, form: Form) => {
-                if (form.templateLocation === undefined) {
-                    return collector;   
-                }
-                if (!(form.templateLocation in collector)) {
-                    collector[form.templateLocation] = [];
-                }
-                collector[form.templateLocation].push(form);
-                return collector;
-            }, {}
-        );
+            if (form.templateLocation) {
+                (collector[form.templateLocation] = collector[form.templateLocation] || []).push(form);
+            } return collector;
+        }, {});
 
     // build the list of form handler functions
     const formHandlers = forms.filter(form => form.handlerName.length && !form.apiRoute?.length)
@@ -45,7 +46,10 @@ function makeRouteTSX(
             if (isStatic) {
                 let redirect = '';
                 if (form.redirectRoute && form.redirectRoute.length) {
-                    redirect = `    router.push('${form.redirectRoute}');${nl}`;
+                    const needsTemplateLiteral = form.redirectRoute.split('/').some(param => form.redirectRoute?.includes(`:${param}`));
+                    const todoComment = needsTemplateLiteral ? `    // TODO: Ensure dynamic parameters are correctly inserted into the redirect route${nl}` : '';
+
+                    redirect = `${todoComment}    router.push('${form.redirectRoute}');${nl}`;
                     imports.add('import type { FormEvent } from "react";');
                     imports.add('import { useRouter } from "next/navigation";');
                 }
@@ -53,7 +57,10 @@ function makeRouteTSX(
             } else {
                 let redirect = '';
                 if (form.redirectRoute && form.redirectRoute.length) {
-                    redirect = `  redirect('${form.redirectRoute}');${nl}`;
+                    const needsTemplateLiteral = form.redirectRoute.split('/').some(param => form.redirectRoute?.includes(`:${param}`));
+                    const todoComment = needsTemplateLiteral ? `  // TODO: Ensure dynamic parameters are correctly inserted into the redirect route${nl}` : '';
+
+                    redirect = `${todoComment}  redirect('${form.redirectRoute}');${nl}`;
                     imports.add('import { redirect } from "next/navigation";');
                 }
                 return `export async function ${form.handlerName}(formData: FormData) {${nl}  "use server";${nl}  // TODO: Implement form handler for ${form.handlerName}${nl}${redirect}}`;
@@ -68,7 +75,7 @@ function makeRouteTSX(
     
     // add imports for links and forms if needed
     if (links.length > 0) {
-        imports.add('import { Link } from "next/link";');
+        imports.add('import Link from "next/link";');
     }
     if (!isStatic && forms.length > 0) {
         imports.add('import { Form } from "next/form";');
@@ -78,18 +85,22 @@ function makeRouteTSX(
     if (isStatic) {
         imports.add(`${nl}export const dynamic = 'force-static';`);
     }
-
-    // collect route parameters from currentRoute, treating "/:parameter" as a parameter
-    const routeParams = currentRoute
-        .split('/')
-        .filter(part => part.startsWith(':'))
-        .map(part => part.replace(':', ''));
     
+    let generateStaticParamsFunction = '';
+    const hasRouteParams = routeParams.length > 0;
+
+    if (isStatic && hasRouteParams) {
+        // dynamically create the TypeScript return type for the function signature.
+        const returnType = `{ ${routeParams.map(p => `${p}: string`).join('; ')} }[]`;
+
+        generateStaticParamsFunction = `${nl}export async function generateStaticParams(): Promise<${returnType}> {${nl}  // TODO: Implement generateStaticParams${nl}  return [];${nl}}${nl + nl}`;
+    }
+
     // add any route parameters to the component template
     let pagePropsType  = '';
     let pageProps = '';
     let destructuredProps = '';
-    if (routeParams.length > 0) {
+    if (hasRouteParams) {
         pagePropsType = `type ${componentName}Props = {${nl}  params: {${nl}`;
         pageProps = `{ params }: ${componentName}Props`;
         destructuredProps = `  const {${nl}`;
@@ -205,10 +216,14 @@ function makeRouteTSX(
     });
 
     // replace any remaining rapid- placeholders with empty strings
-    prototypeTemplate = prototypeTemplate.replace(/<!-- rapid-[^>]+?-->/g, '');
+    prototypeTemplate = prototypeTemplate.replace(/<!-- rapid-[^>]+?-->/g, '')
+    // replace html class and for attributes with React style
+        .replace(/ class=/g, ' className=')
+        .replace(/ for=/g, ' htmlFor=');
     
     return Array.from(imports).join(nl)
         + nl + nl
+        + generateStaticParamsFunction
         + pagePropsType
         + (!isStatic && formHandlers.length > 0 ? formHandlers + nl + nl : '')
         + `export default function ${componentName}(${pageProps}) {${nl}${destructuredProps}`

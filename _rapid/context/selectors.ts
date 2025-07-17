@@ -20,3 +20,7 @@ export const selectCurrentFormIndex = (state: ProjectState): number | null => st
 export const selectIsEditing = (state: ProjectState): Boolean => state.isEditing;
 
 export const selectIsPreviewing = (state: ProjectState): Boolean => state.isPreviewing;
+
+export const selectIsPublishing = (state: ProjectState): Boolean => state.isPublishing;
+
+export const selectSelectedRoutes = (state: ProjectState): string[] => state.selectedRoutes;

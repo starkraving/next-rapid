@@ -9,6 +9,7 @@ import {
   setCurrentRoute,
   setIsEditing,
   setIsPreviewing,
+  setIsPublishing,
   setProject
 } from "../context/actions";
 import { useRapidContext } from "../context/store";
@@ -20,6 +21,8 @@ import {
   selectGlobals,
   selectIsEditing,
   selectIsPreviewing,
+  selectIsPublishing,
+  selectSelectedRoutes,
   selectProject,
   selectRouteProperties
 } from "../context/selectors";
@@ -104,9 +107,12 @@ export default function useRapid() {
     routeProperties: (selectRouteProperties(state) ?? defaultRouteProperties) as Page,
     isEditing: selectIsEditing(state),
     isPreviewing: selectIsPreviewing(state),
+    isPublishing: selectIsPublishing(state),
     isLoaded: Boolean(selectProject(state)),
     currentFormIndex: selectCurrentFormIndex(state),
     globals: selectGlobals(state),
+    selectedRoutes: selectSelectedRoutes(state),
+    allRoutes: selectProject(state)?.routes || {},
 
     dispatchSaveRoute: (routeProperties: Page) => {
         dispatch(saveRoute(routeProperties));
@@ -123,5 +129,6 @@ export default function useRapid() {
     dispatchSetCurrentFormIndex: (currentForm: number | null) => dispatch(setCurrentFormIndex(currentForm)),
     dispatchEditGlobals: () => dispatch(editGlobals()),
     dispatchSetIsPreviewing: (isPreviewing: boolean) => dispatch(setIsPreviewing(isPreviewing)),
+    dispatchSetIsPublishing: (isPublishing: boolean) => dispatch(setIsPublishing(isPublishing)),
   };
 }

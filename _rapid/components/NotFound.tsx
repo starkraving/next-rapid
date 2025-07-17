@@ -11,11 +11,12 @@ import RouteEditor from "./RouteEditor";
 import RouteViewer from "./RouteViewer";
 import RoutePreviewer from "./RoutePreviewer";
 import match from "../libs/match";
+import ProjectPublisher from "./ProjectPublisher";
 
 export const isDevMode = process.env.NODE_ENV === 'development';
 
 function NotFound(): ReactElement {
-  const {currentRoute, currentFormIndex, routeFound, isEditing, isPreviewing, isLoaded, routeProperties: propsForRoute, globals} = useRapid();
+  const {currentRoute, currentFormIndex, routeFound, isEditing, isPreviewing, isPublishing, isLoaded, routeProperties: propsForRoute, globals} = useRapid();
   const routeProperties = currentRoute ? propsForRoute : globals as Page;
   const currentForm = routeFound && currentFormIndex !== null && routeProperties.forms[currentFormIndex]
     ? routeProperties.forms[currentFormIndex]
@@ -26,6 +27,7 @@ function NotFound(): ReactElement {
       [currentForm !== null && !isEditing, () => <CurrentFormViewer {...{currentForm}} />],
       [currentForm !== null && !!isEditing, () => <CurrentFormEditor {...{currentForm}} />],
       [!!isEditing || !routeFound, () => <RouteEditor {...{routeProperties}} />],
+      [!!isPublishing, () => <ProjectPublisher />],
       [!!isPreviewing, () => <RoutePreviewer {...{currentRoute, routeProperties}} />],
       [true, () => <RouteViewer {...{routeProperties}} />],
     ]);

@@ -9,7 +9,7 @@ export const ViewFormActions = (): ReactElement => {
 };
 
 export const ViewRouteActions = (): ReactElement => {
-    const {dispatchSetIsEditing, dispatchEditGlobals, dispatchSetIsPreviewing} = useRapid();
+    const {dispatchSetIsEditing, dispatchEditGlobals, dispatchSetIsPreviewing, dispatchSetIsPublishing} = useRapid();
 
     return <>
         {/* Authoring Actions */}
@@ -21,14 +21,36 @@ export const ViewRouteActions = (): ReactElement => {
 
         {/* Code Actions */}
         <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPreviewing(true)}>Preview Code</button>
+        <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPublishing(true)}>Publish Project</button>
     </>
-}
+};
 
 export const PreviewRouteActions = (): ReactElement => {
-    const {dispatchSetIsPreviewing} = useRapid();
+    const {isPublishing, dispatchSetIsPreviewing, dispatchSetIsPublishing} = useRapid();
 
-    return <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPreviewing(false)}>Exit Preview</button>
-}   
+    return <>
+        <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPreviewing(false)}>Exit Preview</button>
+        {
+            ! isPublishing &&
+                <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPublishing(true)}>Publish Route</button>
+        }
+    </>
+};
+
+export const PublishActions = (): ReactElement => {
+    const {dispatchSetIsPublishing} = useRapid();
+
+    return <>
+        <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPublishing(false)}>Cancel</button>
+        <p className="text-small"> 
+            Select the routes you want to publish as actual files in the project.
+            After you select the routes, click the "Publish" button to generate the files.
+        </p>
+        <p className="text-small">
+            NOTE: This will overwrite any existing files with the same name.
+        </p>
+    </>
+};
 
 export const ViewRouteInstructions = (): ReactElement => (
     <>
@@ -58,7 +80,7 @@ export const ViewFormInstructions = (): ReactElement => (
     </>
 );
 const ContextualActionsWrapper = (): ReactElement => {
-    const {routeProperties, isEditing, isPreviewing, routeFound, currentFormIndex} = useRapid();
+    const {routeProperties, isEditing, isPreviewing, isPublishing, routeFound, currentFormIndex} = useRapid();
     const currentForm = routeFound && currentFormIndex !== null && routeProperties.forms[currentFormIndex]
     ? routeProperties.forms[currentFormIndex]
     : null;
@@ -68,6 +90,7 @@ const ContextualActions = () =>
         [currentForm !== null && !isEditing, () => <ViewFormActions />],
         [currentForm !== null && !!isEditing, () => <ViewFormInstructions />],
         [!routeFound || !!isEditing, () => <ViewRouteInstructions />],
+        [!!isPublishing, () => <PublishActions />],
         [!!isPreviewing, () => <PreviewRouteActions />],
         [true, () => <ViewRouteActions />],
     ]);

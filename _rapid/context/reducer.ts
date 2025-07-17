@@ -6,6 +6,8 @@ export const getInitialState = (): ProjectState => ({
     currentFormIndex: null,
     isEditing: false,
     isPreviewing: false,
+    isPublishing: false,
+    selectedRoutes: [],
 });
 
 const appReducer = (state: ProjectState = getInitialState(), action: ProjectAction): ProjectState => {
@@ -52,6 +54,20 @@ const appReducer = (state: ProjectState = getInitialState(), action: ProjectActi
         return {
           ...state,
           isPreviewing: action.payload,
+        };
+
+      case "SET_IS_PUBLISHING":
+        return {
+          ...state,
+          isPublishing: action.payload,
+          isPreviewing: (!action.payload) ? false : state.isPreviewing, // Exit preview mode when cancelling publish
+          selectedRoutes: (!action.payload)
+            ? []
+            : (
+              state.isPreviewing && state.currentRoute
+                ? [state.currentRoute]
+                : Object.keys(state.project?.routes || {})
+            ),
         };
 
       case "EDIT_GLOBALS":

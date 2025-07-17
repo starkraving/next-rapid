@@ -50,6 +50,8 @@ export type ProjectState = {
   currentFormIndex: null | number;
   isEditing: boolean;
   isPreviewing: boolean;
+  isPublishing: boolean;
+  selectedRoutes: string[];
 };
 
 export type ProjectAction =
@@ -59,6 +61,7 @@ export type ProjectAction =
   | { type: "SAVE_ROUTE", payload: Page }
   | { type: "SET_IS_EDITING", payload: boolean }
   | { type: "SET_IS_PREVIEWING", payload: boolean }
+  | { type: "SET_IS_PUBLISHING", payload: boolean }
   | { type: "SET_CURRENT_FORM", payload: number | null }
   | { type: "EDIT_GLOBALS" }
   | { type: "SAVE_GLOBALS", payload: GlobalProperties }

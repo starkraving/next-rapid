@@ -112,25 +112,27 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             </div>
         </section>
         <section className="bg-white p-6 rounded-md shadow-md mt-6 max-w-screen-xl mx-auto format">
-            <h3>Forms</h3>
-            {
-                editableForms.map((form, index) => {
-                    const {submitText, handlerName, ...additionalFormProps} = form;
-                    return (
-                        <div key={`form_${index}`} className="flex items-center space-x-2">
-                            <label className="flex-1">
-                                <span className="block text-sm font-medium text-gray-700">Submit Text:</span>
-                                <input type="text" name="submitText" id={`submitText_${index}`} defaultValue={submitText} className="w-full border rounded-md p-2 mt-1" />
-                            </label>
-                            <label className="flex-1">
-                                <span className="block text-sm font-medium text-gray-700">Handler Name (onSubmit)</span>
-                                <input type="text" name="handlerName" id={`handlerLane_${index}`} defaultValue={handlerName} className="w-full border rounded-md p-2 mt-1" />
-                            </label>
-                            <input type="hidden" name="additionalFormProps" id={`additionalFormProps_${index}`} value={JSON.stringify(additionalFormProps ?? {})} />
-                        </div>
-                    )
-                })
-            }
+            <h3>Forms:</h3>
+            <div className="space-y-4">
+                {
+                    editableForms.map((form, index) => {
+                        const {submitText, handlerName, ...additionalFormProps} = form;
+                        return (
+                            <div key={`form_${index}`} className="flex items-center space-x-2">
+                                <label className="flex-1">
+                                    <span className="block text-sm font-medium text-gray-700">Submit Text</span>
+                                    <input type="text" name="submitText" id={`submitText_${index}`} defaultValue={submitText} className="w-full border rounded-md p-2 mt-1" />
+                                </label>
+                                <label className="flex-1">
+                                    <span className="block text-sm font-medium text-gray-700">Handler Name (onSubmit)</span>
+                                    <input type="text" name="handlerName" id={`handlerLane_${index}`} defaultValue={handlerName} className="w-full border rounded-md p-2 mt-1" />
+                                </label>
+                                <input type="hidden" name="additionalFormProps" id={`additionalFormProps_${index}`} value={JSON.stringify(additionalFormProps ?? {})} />
+                            </div>
+                        )
+                    })
+                }
+            </div>
         </section>
         {/* ================= Action Buttons ================== */}
         <section className="mt-6 flex justify-end space-x-2 max-w-screen-xl mx-auto pb-6">

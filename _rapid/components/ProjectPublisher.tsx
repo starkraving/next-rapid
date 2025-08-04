@@ -51,10 +51,14 @@ export default function ProjectPublisher() {
             const routeTSX = makeRouteTSX(templateHTML, route, routeContent);
             setRouteCode(routeTSX);
         }
+        evt.stopPropagation();
+    };
+
+    const resetRoutePreview = () => {
         if (codeContainerRef.current) {
             codeContainerRef.current.scrollTo(0, 0);
         }
-        evt.stopPropagation();
+        setRouteCode(null);
     };
 
     return (
@@ -102,7 +106,12 @@ export default function ProjectPublisher() {
                 </ul>
             </section>
             <dialog id="dialog" popover="manual" className="p-6 w-full max-w-6xl h-5/6 rounded-lg shadow-xl backdrop:bg-black/50 m-auto">
-                <button popoverTarget="dialog" popoverTargetAction="hide" className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                <button 
+                    popoverTarget="dialog"
+                    popoverTargetAction="hide"
+                    className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                    onClick={resetRoutePreview}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>

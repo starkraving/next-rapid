@@ -70,6 +70,15 @@ const appReducer = (state: ProjectState = getInitialState(), action: ProjectActi
             ),
         };
 
+      case "SET_SELECTED_ROUTES":
+        return {
+          ...state,
+          selectedRoutes: state.selectedRoutes.includes(action.payload)
+            ? state.selectedRoutes.filter((route) => route !== action.payload)
+            : [...state.selectedRoutes, action.payload],
+        };
+
+
       case "EDIT_GLOBALS":
         return {
           ...state,

@@ -8,6 +8,7 @@ export const SAVE_PROJECT = 'SAVE_PROJECT';
 export const SET_IS_EDITING = 'SET_IS_EDITING';
 export const SET_IS_PREVIEWING = 'SET_IS_PREVIEWING';
 export const SET_IS_PUBLISHING = 'SET_IS_PUBLISHING';
+export const SET_SELECTED_ROUTES = 'SET_SELECTED_ROUTES';
 export const EDIT_GLOBALS = 'EDIT_GLOBALS';
 export const SAVE_GLOBALS = 'SAVE_GLOBALS';
 
@@ -44,6 +45,11 @@ export const setIsPreviewing = (isPreviewing: boolean): ProjectAction => ({
 export const setIsPublishing = (isPublishing: boolean): ProjectAction => ({
   type: SET_IS_PUBLISHING,
   payload: isPublishing,
+});
+
+export const setSelectedRoutes = (selectedRoute: string): ProjectAction => ({
+  type: SET_SELECTED_ROUTES,
+  payload: selectedRoute,
 });
 
 export const editGlobals = (): ProjectAction => ({

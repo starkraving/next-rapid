@@ -10,7 +10,8 @@ import {
   setIsEditing,
   setIsPreviewing,
   setIsPublishing,
-  setProject
+  setProject,
+  setSelectedRoutes,
 } from "../context/actions";
 import { useRapidContext } from "../context/store";
 import { GlobalProperties, Page, Project } from "../data/types";
@@ -130,5 +131,8 @@ export default function useRapid() {
     dispatchEditGlobals: () => dispatch(editGlobals()),
     dispatchSetIsPreviewing: (isPreviewing: boolean) => dispatch(setIsPreviewing(isPreviewing)),
     dispatchSetIsPublishing: (isPublishing: boolean) => dispatch(setIsPublishing(isPublishing)),
+    dispatchSetSelectedRoutes: (selectedRoute: string) => {
+      dispatch(setSelectedRoutes(selectedRoute));
+    }
   };
 }

@@ -31,7 +31,7 @@ const formatRouteForDisplay = (route: string): string => {
 };
     
 export default function ProjectPublisher() {
-    const { allRoutes, selectedRoutes } = useRapid();
+    const { allRoutes, selectedRoutes, dispatchSetSelectedRoutes } = useRapid();
     const [routeCode, setRouteCode] = React.useState<string|null>(null);
     const codeContainerRef = useRef<HTMLPreElement>(null);
     const templateHTML = document.querySelector('#prototype_template template')?.innerHTML ?? '';
@@ -75,6 +75,10 @@ export default function ProjectPublisher() {
                                     name="selectedRoute"
                                     value={route}
                                     defaultChecked={selectedRoutes.includes(route)}
+                                    onChange={(evt) => {
+                                        const selectedRoute = evt.currentTarget.value;
+                                        dispatchSetSelectedRoutes(selectedRoute);
+                                    }}
                                     className="hidden"
                                 />
                                 <span className="text-gray-700 flex gap-2 items-top">

@@ -63,5 +63,6 @@ export type ProjectAction =
   | { type: "SET_IS_PREVIEWING", payload: boolean }
   | { type: "SET_IS_PUBLISHING", payload: boolean }
   | { type: "SET_CURRENT_FORM", payload: number | null }
+  | { type: "SET_SELECTED_ROUTES", payload: string }
   | { type: "EDIT_GLOBALS" }
   | { type: "SAVE_GLOBALS", payload: GlobalProperties }

@@ -7,7 +7,7 @@ interface RouteEditorProps {
 }
 
 export default function RouteEditor({routeProperties}: RouteEditorProps): ReactElement {
-    const {currentRoute, dispatchSaveRoute, dispatchSaveGlobals, dispatchSetIsEditing, dispatchSetCurrentFormIndex, isEditing} = useRapid();
+    const {currentRoute, dispatchSaveRoute, dispatchSaveGlobals, dispatchSetIsEditing, isEditing} = useRapid();
 
     /**
      * Form submit handler to build a Page object and submit it to global state
@@ -24,21 +24,24 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
 
         const arVisibleText = formData.getAll('visibleText').map((value: FormDataEntryValue) => value.toString());
         const arRoute = formData.getAll('route').map((value: FormDataEntryValue) => value.toString());
+        const arLinkTemplateLocation = formData.getAll('linkTemplateLocation').map((value: FormDataEntryValue) => value.toString());
         newRouteProperties.links = arVisibleText
             .map((visibleText, i) => ({
                 visibleText,
                 route: arRoute[i],
-                templateLocation: currentRoute !== null ? 'general' : 'global'
+                templateLocation: arLinkTemplateLocation[i] ?? (currentRoute !== null ? 'general' : 'global')
             } as Link))
             .filter((editableLink: Link) => editableLink.visibleText.length > 0);
 
         const arSubmitText = formData.getAll('submitText').map((value: FormDataEntryValue) => value.toString());
         const arHandlerName = formData.getAll('handlerName').map((value: FormDataEntryValue) => value.toString());
+        const arFormTemplateLocation = formData.getAll('formTemplateLocation').map((value: FormDataEntryValue) => value.toString());
         const arAdditionalFormProps = formData.getAll('additionalFormProps').map((value: FormDataEntryValue) => (value.toString()));
         newRouteProperties.forms = arSubmitText
             .map((submitText, i) => ({
                 submitText,
                 handlerName: arHandlerName[i],
+                templateLocation: arFormTemplateLocation[i] ?? 'general',
                 ...JSON.parse(arAdditionalFormProps[i]),
             } as Form))
             .filter((editableForm: Form) => editableForm.submitText.length > 0);
@@ -68,6 +71,11 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             .fill({ submitText: '', handlerName: '', templateLocation: 'general' })
     ];
 
+    // read the template from the DOM to determine the list of possible template locaations
+        const templateHTML = document.querySelector('#prototype_template template')?.innerHTML ?? '';
+        const linkTemplateLocations = templateHTML.match(/<!-- rapid-link-block-start="([^"]+)" -->/g)?.map(match => match.replace(/<!-- rapid-link-block-start="([^"]+)" -->/, '$1')) || ['general', 'global'];
+        const formTemplateLocations = templateHTML.match(/<!-- rapid-form-block-start="([^"]+)" -->/g)?.map(match => match.replace(/<!-- rapid-form-block-start="([^"]+)" -->/, '$1')) || ['general', 'global'];
+
 
     return <form onSubmit={handleFormSubmit}>
         <section className="bg-white p-6 pt-1 rounded-md shadow-md mt-6 max-w-screen-xl mx-auto format">
@@ -93,7 +101,7 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             <div className="space-y-4">
                 {
                     editableLinks.map((link, index) => {
-                        const {visibleText, route, ...additionalLinkProps} = link;
+                        const {visibleText, route, templateLocation = (currentRoute !== null ? 'general' : 'global')} = link;
                         return (
                             <div key={`link_${index}`} className="flex items-center space-x-2">
                                 <label className="flex-1">
@@ -104,7 +112,16 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
                                     <span className="block text-sm font-medium text-gray-700">Link Address</span>
                                     <input type="text" name="route" id={`route_${index}`} defaultValue={route} className="w-full border rounded-md p-2 mt-1" />
                                 </label>
-                                <input type="hidden" name="additionalLinkProps" id={`additionalLinkProps_${index}`} value={JSON.stringify(additionalLinkProps)} />
+                                <label className="flex-1">
+                                    <span className="block text-sm font-medium text-gray-700">Template Location</span>
+                                    <select name="linkTemplateLocation" id={`linkTemplateLocation_${index}`} defaultValue={templateLocation} className="w-full border rounded-md p-2 mt-1">
+                                        {
+                                            linkTemplateLocations.map((location) => (
+                                                <option key={`linkTemplateLocation_${location}`} value={location}>{location}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </label>
                             </div>
                         )
                     })
@@ -116,7 +133,7 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
             <div className="space-y-4">
                 {
                     editableForms.map((form, index) => {
-                        const {submitText, handlerName, ...additionalFormProps} = form;
+                        const {submitText, handlerName, formTemplateLocation: templateLocation = 'general', ...additionalFormProps} = form;
                         return (
                             <div key={`form_${index}`} className="flex items-center space-x-2">
                                 <label className="flex-1">
@@ -126,6 +143,16 @@ export default function RouteEditor({routeProperties}: RouteEditorProps): ReactE
                                 <label className="flex-1">
                                     <span className="block text-sm font-medium text-gray-700">Handler Name (onSubmit)</span>
                                     <input type="text" name="handlerName" id={`handlerLane_${index}`} defaultValue={handlerName} className="w-full border rounded-md p-2 mt-1" />
+                                </label>
+                                <label className="flex-1">
+                                    <span className="block text-sm font-medium text-gray-700">Template Location</span>
+                                    <select name="formTemplateLocation" id={`formTemplateLocation_${index}`} defaultValue={templateLocation} className="w-full border rounded-md p-2 mt-1">
+                                        {
+                                            formTemplateLocations.map((location) => (
+                                                <option key={`formTemplateLocation_${location}`} value={location}>{location}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </label>
                                 <input type="hidden" name="additionalFormProps" id={`additionalFormProps_${index}`} value={JSON.stringify(additionalFormProps ?? {})} />
                             </div>

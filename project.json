@@ -109,6 +109,7 @@
     },
     "/store/categories/:categorySlug/:productSlug": {
       "description": "Displays full product details with photos",
+      "isStatic": false,
       "links": [
         {
           "visibleText": "Back to Store",
@@ -128,13 +129,13 @@
       ],
       "forms": [
         {
-          "handlerName": "addToCart",
-          "description": "Adds the current product to the user's cart via API",
           "submitText": "Add to Cart",
+          "handlerName": "addToCart",
+          "templateLocation": "general",
+          "description": "Adds the current product to the user's cart via API",
           "method": "POST",
           "redirectRoute": "",
           "apiRoute": "",
-          "templateLocation": "general",
           "fields": [
             {
               "name": "productId",

@@ -78,7 +78,7 @@ function makeRouteTSX(
         imports.add('import Link from "next/link";');
     }
     if (!isStatic && forms.length > 0) {
-        imports.add('import { Form } from "next/form";');
+        imports.add('import Form from "next/form";');
     }
 
     // optionally add the declaration for static rendering

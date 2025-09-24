@@ -64,7 +64,9 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
 
                         const templatePath = path.join(process.cwd(), '_rapid', 'prototype', 'template.html');
                         const defaultTemplatePath = path.join(process.cwd(), '_rapid', 'prototype', 'template.default.html');
-                        const templateHtml = fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf-8') : fs.readFileSync(defaultTemplatePath, 'utf-8');
+                        let templateHtml = fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf-8') : fs.readFileSync(defaultTemplatePath, 'utf-8');
+                        const templateContentMatch = templateHtml.match(/<template[^>]*>([\s\S]*)<\/template>/i);
+                        templateHtml = templateContentMatch ? templateContentMatch[1] : templateHtml;
                         
                         const tempPublishDir = path.join(process.cwd(), '.rapid_temp_publish');
                         const appDir = path.join(process.cwd(), 'app');
@@ -82,13 +84,10 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
                             const originalLayoutPath = path.join(appDir, 'layout.tsx');
                             let originalLayoutContent = await fs.promises.readFile(originalLayoutPath, 'utf-8');
                             
-                            // Ensure Link import is present if needed
-                            const newBodyContent = makeLayoutTSX(templateHtml, projectData.global);
-                            if (newBodyContent.includes('<Link') && !originalLayoutContent.includes('import Link from "next/link";')) {
-                                originalLayoutContent = `import Link from "next/link";\n${originalLayoutContent}`;
-                            }
+                            const [imports, formHandlers, newBodyContent] = makeLayoutTSX(templateHtml, projectData.global);
 
-                            const newLayoutContent = originalLayoutContent.replace(new RegExp('(<body[^>]*>)[]*(<\/body>)', 'i'), `$1${newBodyContent}$2`);
+                            originalLayoutContent = imports + formHandlers + originalLayoutContent;
+                            const newLayoutContent = originalLayoutContent.replace(/(<body[^>]*>)[\s\S]*(<\/body>)/gi, `$1${newBodyContent}$2`);
                             
                             await fs.promises.writeFile(layoutFilePath, newLayoutContent);
                         }

@@ -2,6 +2,7 @@ import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import useRapid from '../hooks/useRapid';
 import makeRouteTSX from '../prototype/libs/makeRouteTSX';
 import Prism from 'prismjs';
+import makeLayoutTSX from '../prototype/libs/makeLayoutTSX';
 
 const sortRoutesForTreeView = (a: string, b: string): number => {
     // The root route should always be first.
@@ -31,7 +32,7 @@ const formatRouteForDisplay = (route: string): string => {
 };
     
 export default function ProjectPublisher() {
-    const { allRoutes, selectedRoutes, dispatchSetSelectedRoutes, dispatchSetIsPublishing } = useRapid();
+    const { allRoutes, selectedRoutes, globals, dispatchSetSelectedRoutes, dispatchSetIsPublishing } = useRapid();
     const [routeCode, setRouteCode] = React.useState<string|null>(null);
     const [publishStatus, setPublishStatus] = useState('idle');
     const [publishProgress, setPublishProgress] = useState(0);
@@ -56,6 +57,14 @@ export default function ProjectPublisher() {
             const routeTSX = makeRouteTSX(templateHTML, route, routeContent);
             setRouteCode(routeTSX);
         }
+        evt.stopPropagation();
+    };
+
+    const handleTemplatePreview = (evt: SyntheticEvent<HTMLButtonElement>) => {
+        const templateHTML = document.querySelector('#prototype_template template')?.innerHTML ?? '';
+        const [importString, formHandlers, layoutTSX] = makeLayoutTSX(templateHTML, globals);
+        const fullLayoutTSX = importString + formHandlers + '\nexport default function Layout({children}) {\n  return (\n' + layoutTSX + '\n  );\n}\n';
+        setRouteCode(fullLayoutTSX);
         evt.stopPropagation();
     };
 
@@ -112,6 +121,12 @@ export default function ProjectPublisher() {
                                     />
                                     Update main layout file (app/layout.tsx)
                                 </label>
+                                <button
+                                  type="button"
+                                  className="ml-2 text-gray-400 hover:text-gray-600"
+                                  popoverTarget="dialog"
+                                  onClick={handleTemplatePreview}
+                                >Preview Template</button>
                             </div>
                             <ul className="list-none">
                                 {Object.keys(allRoutes).sort(sortRoutesForTreeView).map((route, index) => (

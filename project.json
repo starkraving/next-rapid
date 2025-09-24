@@ -251,6 +251,12 @@
         }
       ],
       "forms": []
+    },
+    "/": {
+      "description": "Homepage for the storefront",
+      "isStatic": false,
+      "links": [],
+      "forms": []
     }
   },
   "global": {

@@ -38,10 +38,7 @@ export const PreviewRouteActions = (): ReactElement => {
 };
 
 export const PublishActions = (): ReactElement => {
-    const {dispatchSetIsPublishing} = useRapid();
-
     return <>
-        <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white hover:bg-gray-600 hover:border-slate-800 focus:bg-gray-600 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button" onClick={() => dispatchSetIsPublishing(false)}>Cancel</button>
         <p className="text-small"> 
             Select the routes you want to publish as actual files in the project.
             After you select the routes, click the "Publish" button to generate the files.

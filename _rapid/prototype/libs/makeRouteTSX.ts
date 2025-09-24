@@ -5,9 +5,9 @@ function makeRouteTSX(
     currentRoute: string,
     routeProperties: Page
 ): string {
-    const { description, links = [], forms = [], isStatic = false } = routeProperties;
+    const { description = '', links = [], forms = [], isStatic = false } = routeProperties;
     const nl = '\n';
-    const imports = new Set<string>(isStatic ? [`use client;${nl}`] : [])
+    const imports = new Set<string>(isStatic ? [`'use client';${nl}`] : [])
         .add('import React from "react";')
     const componentName = 'PageComponent';
 
@@ -78,7 +78,7 @@ function makeRouteTSX(
         imports.add('import Link from "next/link";');
     }
     if (!isStatic && forms.length > 0) {
-        imports.add('import { Form } from "next/form";');
+        imports.add('import Form from "next/form";');
     }
 
     // optionally add the declaration for static rendering
